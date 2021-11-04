@@ -1,0 +1,76 @@
+if (Gate::allows('is')) {
+    //
+}
+else {
+    session()->flash('error','This action is unauthorized.');
+    return redirect()->back();
+}
+
+
+
+
+################################
+        Access
+################################
+if (Gate::allows('isAccess')) {
+    //
+}
+else {
+    session()->flash('error','This action is unauthorized.');
+    return redirect()->back();
+}
+
+################################
+        Create
+################################
+if (Gate::allows('isCreate')) {
+    //
+}
+else {
+    session()->flash('error','This action is unauthorized.');
+    return redirect()->back();
+}
+
+################################
+        Edit
+################################
+if (Gate::allows('isEdit')) {
+    //
+}
+else {
+    session()->flash('error','This action is unauthorized.');
+    return redirect()->back();
+}
+
+################################
+        View
+################################
+if (Gate::allows('isView')) {
+    //
+}
+else {
+    session()->flash('error','This action is unauthorized.');
+    return redirect()->back();
+}
+
+################################
+        Delete
+################################
+if (Gate::allows('isDelete')) {
+    //
+}
+else {
+    session()->flash('error','This action is unauthorized.');
+    return redirect()->back();
+}
+
+################################
+        Status
+################################
+if (Gate::allows('isAvailable')) {
+    //
+}
+else {
+    session()->flash('error','This action is unauthorized.');
+    return redirect()->back();
+}
