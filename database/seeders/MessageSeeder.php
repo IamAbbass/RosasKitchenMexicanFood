@@ -36,7 +36,7 @@ class MessageSeeder extends Seeder
             'type' => "Notification",
             'status' => "Pick-Up",
             'title' => "Pick-Up",
-            'message' => "You're SABZIFY order is on its way.",
+            'message' => "You're ROZA order is on its way.",
             'record_by' => 1,
         ]);
         Message::create([

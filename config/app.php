@@ -18,18 +18,18 @@ return [
     'slogan'                => env('APP_SLOGAN', 'Laravel'),
 
     // Application SMS On/Off
-    'sabzify_sms'           => env('SABZIFY_SMS', 'Laravel'),
+    'ROZA_sms'           => env('ROZA_SMS', 'Laravel'),
     'sms_api_key'           => env('SMS_API_KEY', 'Laravel'),
 
     // Application Email On/Off
-    'sabzify_email'         => env('SABZIFY_EMAIL', 'Laravel'),
+    'ROZA_email'         => env('ROZA_EMAIL', 'Laravel'),
 
     // Application Notification
-    'sabzify_notification'  => env('SABZIFY_NOTIFICATION', 'Laravel'),
+    'ROZA_notification'  => env('ROZA_NOTIFICATION', 'Laravel'),
     'firebase_server_key'   => env('FIREBASE_SERVER_KEY', 'Laravel'),
 
     // Application Log
-    'sabzify_log'           => env('SABZIFY_LOG', 'Laravel'),
+    'ROZA_log'           => env('ROZA_LOG', 'Laravel'),
 
     /*
     |--------------------------------------------------------------------------

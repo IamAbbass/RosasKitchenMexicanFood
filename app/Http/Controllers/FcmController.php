@@ -54,7 +54,7 @@ class FcmController extends Controller
     {
         // return $request->all();
         if (Gate::allows('isStore')) {
-            if (config('app.sabzify_notification',false) == true) {
+            if (config('app.ROZA_notification',false) == true) {
                 $request->validate([
                     'title'           =>  'required|max:40',
                     'description'     =>  'required|max:50',
@@ -153,7 +153,7 @@ class FcmController extends Controller
     {
         // return $request->all();
         if (Gate::allows('isUpdate')) {
-            if (config('app.sabzify_notification',false) == true) {
+            if (config('app.ROZA_notification',false) == true) {
                 $request->validate([
                     'title'           =>  'required|max:40',
                     'description'     =>  'required|max:50',

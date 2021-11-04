@@ -17,9 +17,9 @@ class BusinessSeeder extends Seeder
     {
         Business::create([
             'image' => 'default.png',
-            'name' => 'Sabzify - Head Office',
+            'name' => 'ROZA - Head Office',
             'phone' => '923347229439',
-            'email' => 'info@sabzify.pk',
+            'email' => 'info@ROZA.pk',
             'address' => 'Karachi, Pakistan',
             'ntn' => '0',
             'strn' => '0',

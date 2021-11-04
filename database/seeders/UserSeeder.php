@@ -37,7 +37,7 @@ class UserSeeder extends Seeder
             'api_token' => "-",
             'image' => 'default.png',
             'name' => 'Zuhair Mustafa',
-            'email' => 'dashboard@sabzify.pk',
+            'email' => 'dashboard@ROZA.pk',
             'password' => Hash::make('12345678'),
             'email_verified_at' => '2021-01-01 00:00:00',
             'phone' => '923347229439',

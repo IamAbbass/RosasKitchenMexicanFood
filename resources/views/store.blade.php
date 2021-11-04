@@ -94,7 +94,7 @@
                                         <a class="page-scroll" target="_blank" href="https://youtu.be/Dz7r07j2hTY">How to order<span></span></a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="page-scroll" target="_blank" href="https://bit.ly/sabzify-wa">WhatsApp<span></span></a>
+                                        <a class="page-scroll" target="_blank" href="https://bit.ly/ROZA-wa">WhatsApp<span></span></a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="page-scroll" href="#contact">Contact<span></span></a>
@@ -114,9 +114,9 @@
 
         <div id="home" class="header_hero">
             <ul class="header_social d-none d-lg-block">
-                <li><a target="_blank" href="https://www.facebook.com/sabzifypk"><i class="lni lni-facebook-filled"></i></a></li>
-                <li><a target="_blank" href="https://www.instagram.com/sabzifypk"><i class="lni lni-instagram-filled"></i></a></li>
-                <li><a target="_blank" href="https://bit.ly/sabzify-wa"><i class="lni lni-whatsapp"></i></a></li>
+                <li><a target="_blank" href="https://www.facebook.com/ROZApk"><i class="lni lni-facebook-filled"></i></a></li>
+                <li><a target="_blank" href="https://www.instagram.com/ROZApk"><i class="lni lni-instagram-filled"></i></a></li>
+                <li><a target="_blank" href="https://bit.ly/ROZA-wa"><i class="lni lni-whatsapp"></i></a></li>
             </ul>
             <div class="container">
                 <div class="row align-items-center justify-content-center justify-content-lg-between">
@@ -126,7 +126,7 @@
                             <h2 class="header_title wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="0.5s">We Deliver<br/>Fresh Fruits & Vegetables</h2>
                             <span class="wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="0.8s">Stay Home, We Deliver!</span>
                             <p class="wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="1.1s"></p>
-                            <a href="https://play.google.com/store/apps/details?id=com.zed.sabzify" rel="nofollow" class="main-btn wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="1.4s">Download App</a>
+                            <a href="https://play.google.com/store/apps/details?id=com.zed.ROZA" rel="nofollow" class="main-btn wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="1.4s">Download App</a>
                         </div> <!-- header hero content -->
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-7">
@@ -159,7 +159,7 @@
                             </div> <!-- call to action content -->
 
                             <div class="call_to_action_btn">
-                                <a href="https://play.google.com/store/apps/details?id=com.zed.sabzify" rel="nofollow" class="main-btn">Download App</a>
+                                <a href="https://play.google.com/store/apps/details?id=com.zed.ROZA" rel="nofollow" class="main-btn">Download App</a>
                             </div> <!-- call to action btn -->
                         </div> <!-- call to action box -->
                     </div>

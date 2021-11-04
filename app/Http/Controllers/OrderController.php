@@ -264,8 +264,8 @@ class OrderController extends Controller
                     'wallet'            => $order->customer->user->wallet - $order->wallet_debit + $order->wallet_credit,
                 ]);
 
-                if (config('app.sabzify_notification',false) == true && $order->wallet_credit > 0) {
-                    $title   = "Sabzify Wallet";
+                if (config('app.ROZA_notification',false) == true && $order->wallet_credit > 0) {
+                    $title   = "ROZA Wallet";
                     $message = "Dear customer, PKR ".number_format($order->wallet_credit,2)." added in your wallet.";
 
                     // Push Notification Admin
@@ -367,17 +367,17 @@ class OrderController extends Controller
             
             //################################ Send SMS ################################
             // Order Confirmed
-            if(config('app.sabzify_sms',false) == true && $notification->status == "Confirmed") {
+            if(config('app.ROZA_sms',false) == true && $notification->status == "Confirmed") {
                 // Fetch SMS Message
                 $messages = Message::where('business_id','=',$order->business_id)->where('type','=',"SMS")->where('status','=',$notification->status)->first();
                 $message  = str_replace("ORDER_NO",$order->order_no,$messages->message);
-                $message  = str_replace("SABZIFY_SUPPORT",$order->business->email,$message);
-                $message  = str_replace("SABZIFY_PHONE",$order->business->phone,$message);
+                $message  = str_replace("ROZA_SUPPORT",$order->business->email,$message);
+                $message  = str_replace("ROZA_PHONE",$order->business->phone,$message);
                 $message  = str_replace("ORDER_AMOUNT",round($order_amount),$message);
                 $message  = str_replace("PAYMENT_METHOD",$order->payment_method,$message);
 
 
-                $sender = "SABZIFY";
+                $sender = "ROZA";
                 $post = "sender=".urlencode($sender)."&mobile=".urlencode($order->phone)."&message=".urlencode($message)."";
                 $url = "https://sendpk.com/api/sms.php?api_key=".config('app.sms_api_key',false);
                 $ch = curl_init();
@@ -398,7 +398,7 @@ class OrderController extends Controller
             }
 
             //################################ Send Email ################################
-            if (config('app.sabzify_email',false) == true) {
+            if (config('app.ROZA_email',false) == true) {
                 // Order Confirmed
                 if ($notification->status == "Confirmed") {
                     \Mail::to($order->email)->send(new \App\Mail\OrderConfirmed($order));
@@ -431,14 +431,14 @@ class OrderController extends Controller
             }
 
             //################################ Send Notification ################################
-            if (config('app.sabzify_notification',false) == true) {
+            if (config('app.ROZA_notification',false) == true) {
                 // Order Confirmed
                 if ($notification->status == "Confirmed") {
                     // Fetch SMS Message
                     $messages = Message::where('business_id','=',$order->business_id)->where('type','=',"Notification")->where('status','=',$notification->status)->first();
                     $message  = str_replace("ORDER_NO",$order->order_no,$messages->message);
-                    $message  = str_replace("SABZIFY_SUPPORT",$order->business->email,$message);
-                    $message  = str_replace("SABZIFY_PHONE",$order->business->phone,$message);
+                    $message  = str_replace("ROZA_SUPPORT",$order->business->email,$message);
+                    $message  = str_replace("ROZA_PHONE",$order->business->phone,$message);
                     $message  = str_replace("ORDER_AMOUNT",round($order_amount),$message);
                     $message  = str_replace("PAYMENT_METHOD",$order->payment_method,$message);
                     // return $message;
@@ -454,8 +454,8 @@ class OrderController extends Controller
                     // Fetch SMS Message
                     $messages = Message::where('business_id','=',$order->business_id)->where('type','=',"Notification")->where('status','=',$notification->status)->first();
                     $message  = str_replace("ORDER_NO",$order->order_no,$messages->message);
-                    $message  = str_replace("SABZIFY_SUPPORT",$order->business->email,$message);
-                    $message  = str_replace("SABZIFY_PHONE",$order->business->phone,$message);
+                    $message  = str_replace("ROZA_SUPPORT",$order->business->email,$message);
+                    $message  = str_replace("ROZA_PHONE",$order->business->phone,$message);
                     $message  = str_replace("ORDER_AMOUNT",round($order_amount),$message);
                     $message  = str_replace("PAYMENT_METHOD",$order->payment_method,$message);
                     // return $message;
@@ -471,8 +471,8 @@ class OrderController extends Controller
                     // Fetch SMS Message
                     $messages = Message::where('business_id','=',$order->business_id)->where('type','=',"Notification")->where('status','=',$notification->status)->first();
                     $message  = str_replace("ORDER_NO",$order->order_no,$messages->message);
-                    $message  = str_replace("SABZIFY_SUPPORT",$order->business->email,$message);
-                    $message  = str_replace("SABZIFY_PHONE",$order->business->phone,$message);
+                    $message  = str_replace("ROZA_SUPPORT",$order->business->email,$message);
+                    $message  = str_replace("ROZA_PHONE",$order->business->phone,$message);
                     $message  = str_replace("ORDER_AMOUNT",round($order_amount),$message);
                     $message  = str_replace("PAYMENT_METHOD",$order->payment_method,$message);
                     // return $message;
@@ -488,8 +488,8 @@ class OrderController extends Controller
                     // Fetch SMS Message
                     $messages = Message::where('business_id','=',$order->business_id)->where('type','=',"Notification")->where('status','=',$notification->status)->first();
                     $message  = str_replace("ORDER_NO",$order->order_no,$messages->message);
-                    $message  = str_replace("SABZIFY_SUPPORT",$order->business->email,$message);
-                    $message  = str_replace("SABZIFY_PHONE",$order->business->phone,$message);
+                    $message  = str_replace("ROZA_SUPPORT",$order->business->email,$message);
+                    $message  = str_replace("ROZA_PHONE",$order->business->phone,$message);
                     $message  = str_replace("ORDER_AMOUNT",round($order_amount),$message);
                     $message  = str_replace("PAYMENT_METHOD",$order->payment_method,$message);
                     // return $message;
@@ -505,8 +505,8 @@ class OrderController extends Controller
                     // Fetch SMS Message
                     $messages = Message::where('business_id','=',$order->business_id)->where('type','=',"Notification")->where('status','=',$notification->status)->first();
                     $message  = str_replace("ORDER_NO",$order->order_no,$messages->message);
-                    $message  = str_replace("SABZIFY_SUPPORT",$order->business->email,$message);
-                    $message  = str_replace("SABZIFY_PHONE",$order->business->phone,$message);
+                    $message  = str_replace("ROZA_SUPPORT",$order->business->email,$message);
+                    $message  = str_replace("ROZA_PHONE",$order->business->phone,$message);
                     $message  = str_replace("ORDER_AMOUNT",round($order_amount),$message);
                     $message  = str_replace("PAYMENT_METHOD",$order->payment_method,$message);
                     // return $message;
@@ -522,8 +522,8 @@ class OrderController extends Controller
                     // Fetch SMS Message
                     $messages = Message::where('business_id','=',$order->business_id)->where('type','=',"Notification")->where('status','=',$notification->status)->first();
                     $message  = str_replace("ORDER_NO",$order->order_no,$messages->message);
-                    $message  = str_replace("SABZIFY_SUPPORT",$order->business->email,$message);
-                    $message  = str_replace("SABZIFY_PHONE",$order->business->phone,$message);
+                    $message  = str_replace("ROZA_SUPPORT",$order->business->email,$message);
+                    $message  = str_replace("ROZA_PHONE",$order->business->phone,$message);
                     $message  = str_replace("ORDER_AMOUNT",round($order_amount),$message);
                     $message  = str_replace("PAYMENT_METHOD",$order->payment_method,$message);
                     // return $message;

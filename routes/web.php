@@ -23,7 +23,7 @@ Route::get('/clear', function() {
     Artisan::call('config:clear');
     session()->flash('success','Application cache flushed.');
 
-    return redirect()->to('https://sabzify.pk');
+    return redirect()->to('https://ROZA.pk');
 });
 
 Route::get('/', function () {

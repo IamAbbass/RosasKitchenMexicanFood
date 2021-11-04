@@ -23,7 +23,7 @@
 
             const map = new google.maps.Map(document.getElementById("map"), {
                 zoom: 11,
-                center: { lat:  {{ $lat }}, lng: {{ $lon }} }, //sabzify location
+                center: { lat:  {{ $lat }}, lng: {{ $lon }} }, //ROZA location
             });
 
             const last_30_days  = "https://maps.google.com/mapfiles/ms/icons/red-dot.png";

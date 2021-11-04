@@ -52,13 +52,13 @@ class SmsController extends Controller
     {
         // return $request->all();
         if (Gate::allows('isStore')) {
-            if(config('app.sabzify_sms',false) == true) {
+            if(config('app.ROZA_sms',false) == true) {
                 $request->validate([
                     'number'      =>  'required',
                     'message'     =>  'required|max:155',
                 ]);
 
-                $sender = "SABZIFY";
+                $sender = "ROZA";
                 $post = "sender=".urlencode($sender)."&mobile=".urlencode($request['number'])."&message=".urlencode($request['message'])."";
                 $url = "https://sendpk.com/api/sms.php?api_key=".config('app.sms_api_key',false);
                 $ch = curl_init();
@@ -138,13 +138,13 @@ class SmsController extends Controller
     {
         // return $request->all();
         if (Gate::allows('isUpdate')) {
-            if(config('app.sabzify_sms',false) == true) {
+            if(config('app.ROZA_sms',false) == true) {
                 $request->validate([
                     'number'      =>  'required',
                     'message'     =>  'required|max:155',
                 ]);
 
-                $sender = "SABZIFY";
+                $sender = "ROZA";
                 $post = "sender=".urlencode($sender)."&mobile=".urlencode($request['number'])."&message=".urlencode($request['message'])."";
                 $url = "https://sendpk.com/api/sms.php?api_key=".config('app.sms_api_key',false);
                 $ch = curl_init();

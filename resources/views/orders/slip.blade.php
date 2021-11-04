@@ -101,7 +101,7 @@
             <footer>
               <h5>TERMS & CONDITIONS</h5>
               <p style="font-size: 11px; text-align: justify;">
-                  - Sabzify will not cater to any complaints made after 01 hours of delivery time.<br />
+                  - ROZA will not cater to any complaints made after 01 hours of delivery time.<br />
                   - Opening of parcels without cash payment is strictly prohibited.<br />
                   - Provide original receipt to return or exchange any item.<br />
                   - Prices are inclusive of sales tax, where applicable.
@@ -119,7 +119,7 @@
                 </strong>
               </p>
               <p style="font-size: 14px; text-align: center;">
-                <img src="{{ asset('assets/attachment/business/playstore.png') }}" width="100" alt="Sabzify App"><br>
+                <img src="{{ asset('assets/attachment/business/playstore.png') }}" width="100" alt="ROZA App"><br>
                 <strong>Scan & rate with 5 stars</strong>
               </p>
               <p style="font-size: 11px; text-align: center;">

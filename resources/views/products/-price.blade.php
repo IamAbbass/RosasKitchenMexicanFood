@@ -21,8 +21,8 @@
                                     </div>
                                     <div class="col company-details">
                                         <div style="font-size: 20px;"><b>Order now <i class="lni lni-pointer-down"></i></b></div>
-                                        <div style="font-size: 17px;"><i class="lni lni-whatsapp"></i> <a href="https://bit.ly/sabzify-wa" target="_blank">{{ auth()->user()->business->phone }}</a></div>
-                                        <div style="font-size: 17px;"><i class="lni lni-play-store"></i> <a href="https://play.google.com/store/apps/details?id=com.zed.sabzify" target="_blank">SABZIFY App.</a></div>
+                                        <div style="font-size: 17px;"><i class="lni lni-whatsapp"></i> <a href="https://bit.ly/ROZA-wa" target="_blank">{{ auth()->user()->business->phone }}</a></div>
+                                        <div style="font-size: 17px;"><i class="lni lni-play-store"></i> <a href="https://play.google.com/store/apps/details?id=com.zed.ROZA" target="_blank">ROZA App.</a></div>
                                         <div style="font-size: 17px;"><i class="lni lni-world"></i> <a href="{{ auth()->user()->business->website }}" target="_blank">{{ auth()->user()->business->name }}</a></div>
                                     </div>
                                 </div>

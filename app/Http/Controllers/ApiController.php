@@ -418,14 +418,14 @@ class ApiController extends Controller
 
         //################################ Send SMS ################################
         // Order Confirmed
-        if(config('app.sabzify_sms',false) == true && $order->status_message->status == "Confirmed") {
+        if(config('app.ROZA_sms',false) == true && $order->status_message->status == "Confirmed") {
             // Preparing Message & Send SMS
             $messages = Message::where('business_id','=',$order->business_id)->where('type','=',"SMS")->where('status','=',"Confirmed")->first();
             $message  = str_replace("ORDER_NO",$order->order_no,$messages->message);
-            $message  = str_replace("SABZIFY_SUPPORT",$order->business->email,$message);
-            $message  = str_replace("SABZIFY_PHONE",$order->business->phone,$message);
+            $message  = str_replace("ROZA_SUPPORT",$order->business->email,$message);
+            $message  = str_replace("ROZA_PHONE",$order->business->phone,$message);
 
-            $sender = "SABZIFY";
+            $sender = "ROZA";
             $post = "sender=".urlencode($sender)."&mobile=".urlencode($order->phone)."&message=".urlencode($message)."";
             $url = "https://sendpk.com/api/sms.php?api_key=".config('app.sms_api_key',false);
             $ch = curl_init();
@@ -441,8 +441,8 @@ class ApiController extends Controller
 
         //################################ Send Email ################################
         // Order Confirmed
-        if(config('app.sabzify_email',false) == true && $order->status_message->status == "Confirmed") {
-            $bcc = "info@sabzify.pk";
+        if(config('app.ROZA_email',false) == true && $order->status_message->status == "Confirmed") {
+            $bcc = "info@ROZA.pk";
             \Mail::to($order->email)->bcc($bcc)->send(new \App\Mail\OrderConfirmed($order));
             $email = true;
         }
@@ -450,12 +450,12 @@ class ApiController extends Controller
         // Preparing Message
         $messages = Message::where('business_id','=',$order->business_id)->where('type','=',"Notification")->where('status','=',"Confirmed")->first();
         $message  = str_replace("ORDER_NO",$order->order_no,$messages->message);
-        $message  = str_replace("SABZIFY_SUPPORT",$order->business->email,$message);
-        $message  = str_replace("SABZIFY_PHONE",$order->business->phone,$message);
+        $message  = str_replace("ROZA_SUPPORT",$order->business->email,$message);
+        $message  = str_replace("ROZA_PHONE",$order->business->phone,$message);
 
         //################################ Admin Notification ################################
         // Order Confirmed
-        if (config('app.sabzify_notification',false) == true) {
+        if (config('app.ROZA_notification',false) == true) {
             Order::AdminPushNotification($order->status_message->title,$message);
         }
 
@@ -480,8 +480,8 @@ class ApiController extends Controller
 
         foreach($orders as $key => $order){
             $message  = str_replace("ORDER_NO",$order->order_no,$order->status_message->message);
-            $message  = str_replace("SABZIFY_SUPPORT",$order->business->email,$message);
-            $message  = str_replace("SABZIFY_PHONE",$order->business->phone,$message);
+            $message  = str_replace("ROZA_SUPPORT",$order->business->email,$message);
+            $message  = str_replace("ROZA_PHONE",$order->business->phone,$message);
 
             // Is Delivery Charges Logic!
             $delivery = Delivery::where('id','=',$order->delivery_id)->where('business_id','=',$order->business_id)->first();
@@ -539,8 +539,8 @@ class ApiController extends Controller
         }
 
         $message  = str_replace("ORDER_NO",$order_row->order_no,$order_row->status_message->message);
-        $message  = str_replace("SABZIFY_SUPPORT",$order_row->business->email,$message);
-        $message  = str_replace("SABZIFY_PHONE",$order_row->business->phone,$message);
+        $message  = str_replace("ROZA_SUPPORT",$order_row->business->email,$message);
+        $message  = str_replace("ROZA_PHONE",$order_row->business->phone,$message);
 
         // Is Delivery Charges Logic!
         $delivery = Delivery::where('id','=',$order_row->delivery_id)->where('business_id','=',$order_row->business_id)->first();
@@ -609,8 +609,8 @@ class ApiController extends Controller
             }
 
             $message  = str_replace("ORDER_NO",$order_row->order_no,$order_row->status_message->message);
-            $message  = str_replace("SABZIFY_SUPPORT",$order_row->business->email,$message);
-            $message  = str_replace("SABZIFY_PHONE",$order_row->business->phone,$message);
+            $message  = str_replace("ROZA_SUPPORT",$order_row->business->email,$message);
+            $message  = str_replace("ROZA_PHONE",$order_row->business->phone,$message);
 
             // Is Delivery Charges Logic!
             $delivery = Delivery::where('id','=',$order_row->delivery_id)->where('business_id','=',$order_row->business_id)->first();
@@ -699,8 +699,8 @@ class ApiController extends Controller
                         'wallet'  => $user->wallet + 30,
                     ]);
 
-                    if (config('app.sabzify_notification',false) == true) {
-                        $title   = "Sabzify Wallet";
+                    if (config('app.ROZA_notification',false) == true) {
+                        $title   = "ROZA Wallet";
                         $message = "Dear customer, PKR 30.00 added in your wallet.";
 
                         // Push Notification Admin

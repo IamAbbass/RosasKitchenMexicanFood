@@ -15,8 +15,8 @@
                                     <div class="col company-details">
                                         <div style="font-size: 28px;"><b>Order now <i class="lni lni-pointer-down"></i></b></div>
                                         <div style="font-size: 20px;"><i class="lni lni-whatsapp"></i> {{ auth()->user()->business->phone }}</div>
-                                        <div style="font-size: 20px;"><i class="lni lni-play-store"></i> SABZIFY.PK</div>
-                                        <div style="font-size: 20px;"><i class="lni lni-world"></i> www.sabzify.pk</div>
+                                        <div style="font-size: 20px;"><i class="lni lni-play-store"></i> ROZA.PK</div>
+                                        <div style="font-size: 20px;"><i class="lni lni-world"></i> www.ROZA.pk</div>
                                     </div>
                                 </div>
                             </header>

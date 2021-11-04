@@ -21,7 +21,7 @@ class LogRoute
         $request_body = json_encode($request->all());
         $json         = json_decode($request_body,true);
 
-        if(config('app.sabzify_log',false) == true) {
+        if(config('app.ROZA_log',false) == true) {
             if(array_key_exists('location', $json)) {
                 $location = str_replace(' ', '', explode(",",$json['location']));
                 $lat = $location[0] == null ? 0 : $location[0];

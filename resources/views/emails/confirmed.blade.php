@@ -474,7 +474,7 @@
                   <td class="content-block">
                     <span class="apple-link">
                         {{ config('app.name', false) }} - {{ config('app.slogan', false) }}<br>
-                        {{ auth()->user()->business->phone }}, {{ config('app.sabzify_phone_style', false) }}
+                        {{ auth()->user()->business->phone }}, {{ config('app.ROZA_phone_style', false) }}
                     </span>
                   </td>
                 </tr>
