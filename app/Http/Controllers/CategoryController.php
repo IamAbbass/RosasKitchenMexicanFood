@@ -44,7 +44,8 @@ class CategoryController extends Controller
     public function create()
     {
         if (Gate::allows('isCreate')) {
-            return view('categories.create');
+            $categories = Category::where('business_id','=',auth()->user()->business_id)->where('sub_id','>',0)->get();
+            return view('categories.create', compact('categories'));
         }
         else {
             session()->flash('error','This action is unauthorized.');
@@ -62,14 +63,16 @@ class CategoryController extends Controller
     {
         if (Gate::allows('isStore')) {
             $request->validate([
-                'image'      =>  'required',
-                'name'       =>  'required|unique:categories,name',
+                'image'       =>  'required',
+                'sub_id'      =>  'required',
+                'name'        =>  'required|unique:categories,name',
             ]);
     
             Category::create([
                 'business_id'   => auth()->user()->business_id,
                 'image'         => $request['image'],
                 'name'          => $request['name'],
+                'sub_id'        => $request['sub_id'],
                 'record_by'     => auth()->id(),
             ]);
             
@@ -108,7 +111,8 @@ class CategoryController extends Controller
     public function edit(Category $category)
     {
         if (Gate::allows('isEdit')) {
-            return view('categories.edit', compact('category'));
+            $categories = Category::where('business_id','=',auth()->user()->business_id)->where('sub_id','>',0)->get();
+            return view('categories.edit', compact('categories','category'));
         }
         else {
             session()->flash('error','This action is unauthorized.');
@@ -127,14 +131,16 @@ class CategoryController extends Controller
     {
         if (Gate::allows('isUpdate')) {
             $request->validate([
-                'image'      =>  'required',
-                'name'       =>  'required|unique:categories,name',
+                'image'       =>  'required',
+                'sub_id'      =>  'required',
+                'name'        =>  'required|unique:categories,name',
             ]);
     
             $category->update([
                 'business_id'   => auth()->user()->business_id,
                 'image'         => $request['image'],
                 'name'          => $request['name'],
+                'sub_id'        => $request['sub_id'],
                 'record_by'     => auth()->id(),
             ]);
             

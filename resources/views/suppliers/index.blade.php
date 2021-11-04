@@ -49,7 +49,7 @@
                                 {{ $supplier->email }}
                             </td>
                             <td>{{ $supplier->phone }}</td>
-                            <td><a href="https://api.whatsapp.com/send?phone={{ $supplier->whatsapp }}">{{ $supplier->whatsapp }}</a></td>
+                            <td><a href="https://api.whatsapp.com/send?phone=92{{ $supplier->whatsapp }}" target="_blank">{{ $supplier->whatsapp }}</a></td>
                             <td>
                                 @if($supplier->is_available == true)
                                     <a href="supplier/is_available/{{ $supplier->id }}">
@@ -86,8 +86,7 @@
                     <tfoot>
                         <tr>
                             <th>#</th>
-                            <th>Name</th>
-                            <th>Business Name</th>
+                            <th>Supplier Info</th>
                             <th>Phone</th>
                             <th>WhatsApp</th>
                             <th>Is Available</th>

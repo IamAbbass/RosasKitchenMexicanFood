@@ -365,7 +365,7 @@ class ApiController extends Controller
         $order = Order::create([
             'business_id'     => $request->business_id,
             'customer_id'     => $customer->id,
-            'order_no'        => strtoupper("SBZ-".substr(md5(uniqid().mt_rand().time()), 9, 9)),
+            'order_no'        => strtoupper("RKMF-".substr(md5(uniqid().mt_rand().time()), 9, 9)),
             'name'            => ucwords($request->name),
             'phone'           => $request->phone,
             'email'           => strtolower($request->email),

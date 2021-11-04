@@ -11,7 +11,7 @@
     <div class="position-relative search-bar-box">
         <form action="/order/search" method="post">
         @csrf
-            <div class="input-group"> <span class="input-group-text" id="basic-addon1">SBZ-</span>
+            <div class="input-group"> <span class="input-group-text" id="basic-addon1">RKMF-</span>
                 <input type="text" class="form-control" name="order_no" autocomplete="off" placeholder="Order No.">
             </div>
             <button type="submit" class="position-absolute top-50 search-close translate-middle-y"><i class='bx bx-x'></i></button>
@@ -293,7 +293,7 @@
         </li>
 
         <!-- Shortcuts -->
-        <li class="nav-item dropdown dropdown-large">
+        {{-- <li class="nav-item dropdown dropdown-large">
             <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" title="Shortcuts" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class='bx bx-category' style="font-size:25px;"></i>
             </a>
@@ -343,6 +343,6 @@
                     </div>
                 </div>
             </div>
-        </li>
+        </li> --}}
     </ul>
 </div>

@@ -54,12 +54,11 @@
                                 </td>
                                 <td>
                                     Name: {{ $order->name }}<br>
-                                    <a href="tel:92{{ $order->phone }}">Phone: {{ $order->phone }}</a><br>
+                                    <a href="tel:92{{ $order->phone }}">Phone: {{ $order->phone }}</a> / <a href="https://api.whatsapp.com/send?phone=92{{ $order->phone }}" target="_blank"><i class="lni lni-whatsapp"></i></a><br>
                                     Email: {{ $order->email }}<br>
                                     Wallet: PKR {{ number_format($order->customer->user->wallet) }}
                                     <hr style="margin: 0.2rem 0 !important">
                                     Coupon: {{ $order->coupon }}, Gift: {{ $order->is_gift == true ? "Yes" : "No" }}<br>
-
                                     <small>
                                         <span>App order radius is {{ number_format($distance,2)." Km" }}</span> - 
                                         <a href="https://www.google.com/maps/place/{{ $order->location }}" target="_blank">Google Map</a>
@@ -73,7 +72,7 @@
                     </table>
                 </div>
                 <div class="col-md-5">
-                    <h5 class="card-title">Billing Details ({{ $order->payment_status }}) - {{ $order->payment_method }}</h5>
+                    <h5 class="card-title">Billing Details (<i>{{ $order->status_message->status }} / {{ $order->payment_status }} / {{ $order->payment_method }}</i>)</h5>
                     <hr style="margin: 0.2rem 0 !important">
                     <form action="/orders/pay_bill/{{ $order->id }}/update" method="POST" enctype="multipart/form-data">
                         @csrf

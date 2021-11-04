@@ -54,7 +54,7 @@
                             </td>
                             <td>
                                 Name: {{ $order->name }}<br>
-                                <a href="tel:92{{ $order->phone }}">Phone: {{ $order->phone }}</a><br>
+                                <a href="tel:92{{ $order->phone }}">Phone: {{ $order->phone }}</a> / <a href="https://api.whatsapp.com/send?phone=92{{ $order->phone }}" target="_blank"><i class="lni lni-whatsapp"></i></a><br>
                                 Email: {{ $order->email }}<br>
                                 Wallet: PKR {{ number_format($order->customer->user->wallet) }}
                                 <hr style="margin: 0.2rem 0 !important">
@@ -91,33 +91,35 @@
                                     </form>
                                 </div>
                                 <hr style="margin: 0.2rem 0 !important">
-                                <form action="/order_status/change"  method="POST" id="order_status_form">
+                                <form action="/order_status/change"  method="POST">
                                     @csrf
                                     <input type="hidden" name="order_id" value="{{ $order->id }}" required>
-                                    <select name="order_status_id" class="form-control small_dropdown" onchange="document.getElementById('order_status_form').submit()">
+                                    <select name="order_status_id" class="form-control small_dropdown" onchange="this.form.submit()">
                                         @foreach($messages as $message)
                                             <option {{ ($order->order_status_id == $message->id) ? 'selected' : '' }} value="{{$message->id}}">Order is {{ ucfirst($message->status) }}</option>
                                         @endforeach
                                     </select>
                                 </form>
-                                <form action="/payment_status/change"  method="POST" id="payment_status_form">
+                                <form action="/payment_status/change"  method="POST">
                                     @csrf
                                     <input type="hidden" name="order_id" value="{{ $order->id }}" required>
-                                    <select name="payment_status" class="form-control small_dropdown" onchange="document.getElementById('payment_status_form').submit()">
+                                    <select name="payment_status" class="form-control small_dropdown" onchange="this.form.submit()">
                                         <option {{ ($order->payment_status == "Unpaid") ? 'selected' : '' }} value="Unpaid">Order is Unpaid</option>
                                         <option {{ ($order->payment_status == "Paid") ? 'selected' : '' }} value="Paid">Order is Paid</option>
                                     </select>
                                 </form>
-                                <form action="/rider_status/change"  method="POST" id="rider_form">
+                                <form action="/rider_status/change"  method="POST">
                                     @csrf
                                     <input type="hidden" name="order_id" value="{{ $order->id }}" required>
-                                    <select name="rider_id" class="form-control small_dropdown" onchange="document.getElementById('rider_form').submit()">
+                                    <select name="rider_id" class="form-control small_dropdown" onchange="this.form.submit()">
                                         <option value="">Select Rider</option>
                                         @foreach($riders as $rider)
                                             <option {{ ($order->rider_id == $rider->id) ? 'selected' : '' }} value="{{$rider->id}}">Rider: {{ ucfirst($rider->name) }}</option>
                                         @endforeach
                                     </select>
                                 </form>
+                                <hr style="margin: 0.2rem 0 !important">
+                                <i>{{ $order->status_message->status }} / {{ $order->payment_status }} / {{ $order->payment_method }}</i><br>
                                 <small style="font-size:8px">
                                     Since {{ Carbon\Carbon::parse(date("Y-m-d h:i:sa",strtotime($order->updated_at)))->diffForHumans() }}
                                     by {{ $order->record_by == 0 ? 'Mobile App' : $order->user->name }}

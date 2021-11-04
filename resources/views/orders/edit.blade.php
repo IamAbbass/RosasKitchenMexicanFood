@@ -55,7 +55,7 @@
                             </td>
                             <td>
                                 Name: {{ $order->name }}<br>
-                                <a href="tel:92{{ $order->phone }}">Phone: {{ $order->phone }}</a><br>
+                                <a href="tel:92{{ $order->phone }}">Phone: {{ $order->phone }}</a> / <a href="https://api.whatsapp.com/send?phone=92{{ $order->phone }}" target="_blank"><i class="lni lni-whatsapp"></i></a><br>
                                 Email: {{ $order->email }}<br>
                                 Wallet: PKR {{ number_format($order->customer->user->wallet) }}
                                 <hr style="margin: 0.2rem 0 !important">
@@ -91,9 +91,9 @@
                                     </form>
                                 </div>
                                 <hr style="margin: 0.2rem 0 !important">
-                                <input type="text" class="form-control small_dropdown" value="Order is {{ $order->status_message->status }}">
-                                <input type="text" class="form-control small_dropdown" value="Order is {{ $order->payment_status }}">
-                                <input type="text" class="form-control small_dropdown" value="{{ $order->rider == null ? 'Rider not assigned' : 'Rider: '.ucfirst($order->rider->name) }}">
+                                Order is {{ $order->status_message->status }}<br>
+                                Order is {{ $order->payment_status }}<br>
+                                {{ $order->rider == null ? 'Rider not assigned' : 'Rider: '.ucfirst($order->rider->name) }}<br>
                                 dt. {{ date('d-m-y h:i:sa', strtotime($order->updated_at)) }}
                             </td>
                         </tr>

@@ -349,32 +349,20 @@ class ProductController extends Controller
                 'id'        => 'required',
                 'purchase'  => 'required',
                 'sale'      => 'required',
-        ]);
+            ]);
 
             $products = Product::where('business_id','=',auth()->user()->business_id)->get();
             foreach ($products as $key => $product)
             {
-                if ($request['purchase'][$key] <= 0 && $request['sale'][$key] <= 0 && $request['discount'][$key] <= 0) {
-                    $product->update([
-                        'unit_id'        =>  $request['unit_id'][$key],
-                        'purchased_unit' =>  $request['unit_id'][$key],
-                        'purchase'       => 0,
-                        'sale'           => 0,
-                        'discount'       => 0,
-                        'is_available'   => 0,
-                        'record_by'      => auth()->id()
-                    ]);
-                }
-                else {
-                    $product->update([
-                        'unit_id'        =>  $request['unit_id'][$key],
-                        'purchased_unit' =>  $request['unit_id'][$key],
-                        'purchase'       => $request['purchase'][$key],
-                        'sale'           => $request['sale'][$key],
-                        'discount'       => $request['discount'][$key],
-                        'record_by'      => auth()->id(),
-                    ]);
-                }
+                $product->update([
+                    'unit_id'        => $request['unit_id'][$key],
+                    'purchase'       => $request['purchase'][$key],
+                    'sale'           => $request['sale'][$key],
+                    'discount'       => $request['discount'][$key],
+                    'purchased_unit' => $request['unit_id'][$key],
+                    'is_available'   => $request['is_available'][$key],
+                    'record_by'      => auth()->id(),
+                ]);
             }
 
             session()->flash('success','Record update successfully.');

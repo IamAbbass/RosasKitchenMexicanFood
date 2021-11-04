@@ -30,13 +30,22 @@
                                 @csrf
                                 @method('PATCH')
                                     <div class="row g-2">
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <label class="form-label">* Image</label>
                                             <input type="text" name="image" value="default.png" autofocus readonly class="form-control">
                                         </div>
-                                        <div class="col-md-9">
+                                        <div class="col-md-3">
                                             <label class="form-label">* Category Name</label>
                                             <input type="text" name="name" value="{{ $category->name }}" autofocus class="form-control">
+                                        </div>
+                                        <div class="col-md-7">
+                                            <label class="form-label">Sub-Categories</label>
+                                            <select class="form-select" name="sub_id">
+                                                <option value="0">Select Sub-Category</option>
+                                                @foreach($categories as $index => $category)
+                                                    <option value="{{ $category->id }}" {{ $category->id == $category->id ? "selected":"" }}>{{ $category->name }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                         <div class="col-2 mt-4">
                                             <div class="d-grid">

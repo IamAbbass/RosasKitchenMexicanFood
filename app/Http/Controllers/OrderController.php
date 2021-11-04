@@ -129,13 +129,7 @@ class OrderController extends Controller
     {
         if (Gate::allows('isShow')) {
             $order = Order::where('id','=',$id)->where('business_id','=',auth()->user()->business_id)->first();
-            if ($order->status_message->status == "Delivered" && $order->payment_status == "Unpaid") {
-                return view('orders.pay_bill', compact('order'));
-            }
-            else {
-                session()->flash('warning','Order# '.$order->order_no.' is already paid or not delivered!');
-                return redirect()->back();
-            }
+            return view('orders.pay_bill', compact('order'));
         }
         else {
             session()->flash('error','This action is unauthorized.');
@@ -310,7 +304,7 @@ class OrderController extends Controller
                 }
                 $order->delete();
                 session()->flash('success','Record removed successfully.');
-                return redirect()->route('orders.index');
+                return redirect()->back();
             }
             else {
                 session()->flash('warning','Cancelled & Unpaid orders are allowed to remove!');
@@ -329,7 +323,7 @@ class OrderController extends Controller
             'order_no' => 'required',
         ]);
 
-        $order_no = "SBZ-".$request->order_no;
+        $order_no = "RKMF-".$request->order_no;
         if (Gate::allows('isShow')) {
             $order = Order::where('business_id','=',auth()->user()->business_id)->where('order_no','=',$order_no)->first();
             $messages = Message::where('business_id','=',auth()->user()->business_id)->where('type','=',"Notification")->get();
@@ -349,29 +343,42 @@ class OrderController extends Controller
 
     public function order_status(Request $request)
     {
+        $notification = Message::where('id','=',$request->order_status_id)->where('business_id','=',auth()->user()->business_id,)->first();
         if (Gate::allows('isUpdate')) {
-            $result = Order::findOrFail($request->order_id);
-            if ($result->status_message->status == "Delivered" && $result->payment_status == "Paid") {
+            $order = Order::findOrFail($request->order_id);
+            if ($order->status_message->status == "Delivered" && $order->payment_status == "Paid") {
                 session()->flash('warning','Cancelled & Unpaid orders are allowed to update their status!');
                 return redirect()->back();
             }
 
-            $result->update([
+            $order->update([
                 'order_status_id' => $request->order_status_id,
                 'record_by' => auth()->id()
             ]);
 
+            // Is Delivery Charges Logic!
+            $delivery = Delivery::where('id','=',$order->delivery_id)->where('business_id','=',$order->business_id)->first();
+            if($order->details->sum('total') >= $delivery->free_delivery_after) {
+                $order_amount = $order->details->sum('total') - ($order->payment_status == "Unpaid" ?  $order->customer->user->wallet : $order->wallet_debit);
+            }
+            else {
+                $order_amount = ($order->details->sum('total') >= $delivery->free_delivery_after ?  $order->details->sum('total') + 0 : $order->details->sum('total') + $delivery->amount) - ($order->payment_status == "Unpaid" ?  $order->customer->user->wallet : $order->wallet_debit);
+            }
+            
             //################################ Send SMS ################################
             // Order Confirmed
-            if(config('app.sabzify_sms',false) == true && $result->status_message->status == "Confirmed") {
+            if(config('app.sabzify_sms',false) == true && $notification->status == "Confirmed") {
                 // Fetch SMS Message
-                $messages = Message::where('business_id','=',$result->business_id)->where('type','=',"SMS")->where('status','=',"Confirmed")->first();
-                $message  = str_replace("ORDER_NO",$result->order_no,$messages->message);
-                $message  = str_replace("SABZIFY_SUPPORT",$result->business->email,$message);
-                $message  = str_replace("SABZIFY_PHONE",$result->business->phone,$message);
+                $messages = Message::where('business_id','=',$order->business_id)->where('type','=',"SMS")->where('status','=',$notification->status)->first();
+                $message  = str_replace("ORDER_NO",$order->order_no,$messages->message);
+                $message  = str_replace("SABZIFY_SUPPORT",$order->business->email,$message);
+                $message  = str_replace("SABZIFY_PHONE",$order->business->phone,$message);
+                $message  = str_replace("ORDER_AMOUNT",round($order_amount),$message);
+                $message  = str_replace("PAYMENT_METHOD",$order->payment_method,$message);
+
 
                 $sender = "SABZIFY";
-                $post = "sender=".urlencode($sender)."&mobile=".urlencode($result->phone)."&message=".urlencode($message)."";
+                $post = "sender=".urlencode($sender)."&mobile=".urlencode($order->phone)."&message=".urlencode($message)."";
                 $url = "https://sendpk.com/api/sms.php?api_key=".config('app.sms_api_key',false);
                 $ch = curl_init();
                 $timeout = 30; // set to zero for no timeout
@@ -383,114 +390,149 @@ class OrderController extends Controller
                 curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
                 $sms = curl_exec($ch);
                 curl_close ($ch);
+
+                // Push Notification Admin
+                Order::AdminPushNotification($notification->title,$message);
+                // Push Notification Customer
+                Order::CustomerPushNotification($order->customer->fcm_token,$notification->title,$message);
             }
 
             //################################ Send Email ################################
             if (config('app.sabzify_email',false) == true) {
                 // Order Confirmed
-                if ($result->status_message->status == "Confirmed") {
-                    \Mail::to($result->email)->send(new \App\Mail\OrderConfirmed($result));
+                if ($notification->status == "Confirmed") {
+                    \Mail::to($order->email)->send(new \App\Mail\OrderConfirmed($order));
                 }
 
                 // Order Preparing
-                if ($result->status_message->status == "Preparing") {
-                    //\Mail::to($result->email)->send(new \App\Mail\OrderPrepairing($result));
+                if ($notification->status == "Preparing") {
+                    //\Mail::to($order->email)->send(new \App\Mail\OrderPrepairing($order));
                 }
 
                 // Order Pick-Up
-                if ($result->status_message->status == "Pick-Up") {
-                    //\Mail::to($result->email)->send(new \App\Mail\OrderPickedup($result));
+                if ($notification->status == "Pick-Up") {
+                    //\Mail::to($order->email)->send(new \App\Mail\OrderPickedup($order));
                 }
 
                 // Order Arrived
-                if ($result->status_message->status == "Arrived") {
-                    //\Mail::to($result->email)->send(new \App\Mail\OrderArrived($result));
+                if ($notification->status == "Arrived") {
+                    //\Mail::to($order->email)->send(new \App\Mail\OrderArrived($order));
                 }
                 
                 // Order Delivered
-                if ($result->status_message->status == "Delivered") {
-                    //\Mail::to($result->email)->send(new \App\Mail\OrderDelivered($result));
+                if ($notification->status == "Delivered") {
+                    //\Mail::to($order->email)->send(new \App\Mail\OrderDelivered($order));
                 }
 
                 // Order Cancelled
-                if ($result->status_message->status == "Cancelled") {
-                    //\Mail::to($result->email)->send(new \App\Mail\OrderCancelled($result));
+                if ($notification->status == "Cancelled") {
+                    //\Mail::to($order->email)->send(new \App\Mail\OrderCancelled($order));
                 }
             }
 
             //################################ Send Notification ################################
             if (config('app.sabzify_notification',false) == true) {
                 // Order Confirmed
-                if ($result->status_message->status == "Confirmed") {
+                if ($notification->status == "Confirmed") {
                     // Fetch SMS Message
-                    $messages = Message::where('business_id','=',$result->business_id)->where('type','=',"Notification")->where('status','=',"Confirmed")->first();
-                    $message  = str_replace("ORDER_NO",$result->order_no,$messages->message);
-                    $message  = str_replace("SABZIFY_SUPPORT",$result->business->email,$message);
-                    $message  = str_replace("SABZIFY_PHONE",$result->business->phone,$message);
+                    $messages = Message::where('business_id','=',$order->business_id)->where('type','=',"Notification")->where('status','=',$notification->status)->first();
+                    $message  = str_replace("ORDER_NO",$order->order_no,$messages->message);
+                    $message  = str_replace("SABZIFY_SUPPORT",$order->business->email,$message);
+                    $message  = str_replace("SABZIFY_PHONE",$order->business->phone,$message);
+                    $message  = str_replace("ORDER_AMOUNT",round($order_amount),$message);
+                    $message  = str_replace("PAYMENT_METHOD",$order->payment_method,$message);
+                    // return $message;
+
+                    // Push Notification Admin
+                    Order::AdminPushNotification($notification->title,$message);
+                    // Push Notification Customer
+                    Order::CustomerPushNotification($order->customer->fcm_token,$notification->title,$message);
                 }
 
                 // Order Preparing
-                if ($result->status_message->status == "Preparing") {
+                if ($notification->status == "Preparing") {
                     // Fetch SMS Message
-                    $messages = Message::where('business_id','=',$result->business_id)->where('type','=',"Notification")->where('status','=',"Preparing")->first();
-                    $message  = str_replace("ORDER_NO",$result->order_no,$messages->message);
-                    $message  = str_replace("SABZIFY_SUPPORT",$result->business->email,$message);
-                    $message  = str_replace("SABZIFY_PHONE",$result->business->phone,$message);
+                    $messages = Message::where('business_id','=',$order->business_id)->where('type','=',"Notification")->where('status','=',$notification->status)->first();
+                    $message  = str_replace("ORDER_NO",$order->order_no,$messages->message);
+                    $message  = str_replace("SABZIFY_SUPPORT",$order->business->email,$message);
+                    $message  = str_replace("SABZIFY_PHONE",$order->business->phone,$message);
+                    $message  = str_replace("ORDER_AMOUNT",round($order_amount),$message);
+                    $message  = str_replace("PAYMENT_METHOD",$order->payment_method,$message);
+                    // return $message;
+
+                    // Push Notification Admin
+                    Order::AdminPushNotification($notification->title,$message);
+                    // Push Notification Customer
+                    Order::CustomerPushNotification($order->customer->fcm_token,$notification->title,$message);
                 }
 
                 // Order Pick-Up
-                if ($result->status_message->status == "Pick-Up") {
+                if ($notification->status == "Pick-Up") {
                     // Fetch SMS Message
-                    $messages = Message::where('business_id','=',$result->business_id)->where('type','=',"Notification")->where('status','=',"Pick-Up")->first();
-                    $message  = str_replace("ORDER_NO",$result->order_no,$messages->message);
-                    $message  = str_replace("SABZIFY_SUPPORT",$result->business->email,$message);
-                    $message  = str_replace("SABZIFY_PHONE",$result->business->phone,$message);
+                    $messages = Message::where('business_id','=',$order->business_id)->where('type','=',"Notification")->where('status','=',$notification->status)->first();
+                    $message  = str_replace("ORDER_NO",$order->order_no,$messages->message);
+                    $message  = str_replace("SABZIFY_SUPPORT",$order->business->email,$message);
+                    $message  = str_replace("SABZIFY_PHONE",$order->business->phone,$message);
+                    $message  = str_replace("ORDER_AMOUNT",round($order_amount),$message);
+                    $message  = str_replace("PAYMENT_METHOD",$order->payment_method,$message);
+                    // return $message;
+
+                    // Push Notification Admin
+                    Order::AdminPushNotification($notification->title,$message);
+                    // Push Notification Customer
+                    Order::CustomerPushNotification($order->customer->fcm_token,$notification->title,$message);
                 }
 
                 // Order Arrived
-                if ($result->status_message->status == "Arrived") {
+                if ($notification->status == "Arrived") {
                     // Fetch SMS Message
-                    $messages = Message::where('business_id','=',$result->business_id)->where('type','=',"Notification")->where('status','=',"Arrived")->first();
-                    $message  = str_replace("ORDER_NO",$result->order_no,$messages->message);
-                    $message  = str_replace("SABZIFY_SUPPORT",$result->business->email,$message);
-                    $message  = str_replace("SABZIFY_PHONE",$result->business->phone,$message);
+                    $messages = Message::where('business_id','=',$order->business_id)->where('type','=',"Notification")->where('status','=',$notification->status)->first();
+                    $message  = str_replace("ORDER_NO",$order->order_no,$messages->message);
+                    $message  = str_replace("SABZIFY_SUPPORT",$order->business->email,$message);
+                    $message  = str_replace("SABZIFY_PHONE",$order->business->phone,$message);
+                    $message  = str_replace("ORDER_AMOUNT",round($order_amount),$message);
+                    $message  = str_replace("PAYMENT_METHOD",$order->payment_method,$message);
+                    // return $message;
+
+                    // Push Notification Admin
+                    Order::AdminPushNotification($notification->title,$message);
+                    // Push Notification Customer
+                    Order::CustomerPushNotification($order->customer->fcm_token,$notification->title,$message);
                 }
 
                 // Order Delivered
-                if ($result->status_message->status == "Delivered") {
+                if ($notification->status == "Delivered") {
                     // Fetch SMS Message
-                    $messages = Message::where('business_id','=',$result->business_id)->where('type','=',"Notification")->where('status','=',"Delivered")->first();
-                    $message  = str_replace("ORDER_NO",$result->order_no,$messages->message);
-                    $message  = str_replace("SABZIFY_SUPPORT",$result->business->email,$message);
-                    $message  = str_replace("SABZIFY_PHONE",$result->business->phone,$message);
+                    $messages = Message::where('business_id','=',$order->business_id)->where('type','=',"Notification")->where('status','=',$notification->status)->first();
+                    $message  = str_replace("ORDER_NO",$order->order_no,$messages->message);
+                    $message  = str_replace("SABZIFY_SUPPORT",$order->business->email,$message);
+                    $message  = str_replace("SABZIFY_PHONE",$order->business->phone,$message);
+                    $message  = str_replace("ORDER_AMOUNT",round($order_amount),$message);
+                    $message  = str_replace("PAYMENT_METHOD",$order->payment_method,$message);
+                    // return $message;
+
+                    // Push Notification Admin
+                    Order::AdminPushNotification($notification->title,$message);
+                    // Push Notification Customer
+                    Order::CustomerPushNotification($order->customer->fcm_token,$notification->title,$message);
                 }
 
                 // Order Cancelled
-                if ($result->status_message->status == "Cancelled") {
+                if ($notification->status == "Cancelled") {
                     // Fetch SMS Message
-                    $messages = Message::where('business_id','=',$result->business_id)->where('type','=',"Notification")->where('status','=',"Cancelled")->first();
-                    $message  = str_replace("ORDER_NO",$result->order_no,$messages->message);
-                    $message  = str_replace("SABZIFY_SUPPORT",$result->business->email,$message);
-                    $message  = str_replace("SABZIFY_PHONE",$result->business->phone,$message);
-                }
+                    $messages = Message::where('business_id','=',$order->business_id)->where('type','=',"Notification")->where('status','=',$notification->status)->first();
+                    $message  = str_replace("ORDER_NO",$order->order_no,$messages->message);
+                    $message  = str_replace("SABZIFY_SUPPORT",$order->business->email,$message);
+                    $message  = str_replace("SABZIFY_PHONE",$order->business->phone,$message);
+                    $message  = str_replace("ORDER_AMOUNT",round($order_amount),$message);
+                    $message  = str_replace("PAYMENT_METHOD",$order->payment_method,$message);
+                    // return $message;
 
-                // Is Delivery Charges Logic!
-                $delivery = Delivery::where('id','=',$result->delivery_id)->where('business_id','=',$result->business_id)->first();
-                if($result->details->sum('total') >= $delivery->free_delivery_after) {
-                    $order_amount = $result->details->sum('total') - ($result->payment_status == "Unpaid" ?  $result->customer->user->wallet : $result->wallet_debit);
+                    // Push Notification Admin
+                    Order::AdminPushNotification($notification->title,$message);
+                    // Push Notification Customer
+                    Order::CustomerPushNotification($order->customer->fcm_token,$notification->title,$message);
                 }
-                else {
-                    $order_amount = ($result->details->sum('total') >= $delivery->free_delivery_after ?  $result->details->sum('total') + 0 : $result->details->sum('total') + $delivery->amount) - ($result->payment_status == "Unpaid" ?  $result->customer->user->wallet : $result->wallet_debit);
-                }
-                
-                $message  = str_replace("ORDER_AMOUNT",round($order_amount),$message);
-                $message  = str_replace("PAYMENT_METHOD",$result->payment_method,$message);
-
-
-                // Push Notification Admin
-                Order::AdminPushNotification($result->status_message->title,$message);
-                // Push Notification Customer
-                Order::CustomerPushNotification($result->customer->fcm_token,$result->status_message->title,$message);
             }
 
             session()->flash('success','Order Status Updated!');
