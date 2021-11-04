@@ -90,7 +90,7 @@
   <body>
     <div id="map"></div>
     <script
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB0k5eKvAEjLA5lU2QRHFtOqeGmai-vpe0&callback=initMap&v=weekly"
+      src="https://maps.googleapis.com/maps/api/js?key=Key here&callback=initMap&v=weekly"
       async
     ></script>
   </body>
